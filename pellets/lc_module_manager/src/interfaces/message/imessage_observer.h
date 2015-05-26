@@ -10,7 +10,7 @@ interface IMessageObserver
     virtual void RegMonitorMsg(int msg) = 0;
     virtual void UnRegMonitorMsg(int msg) = 0;
 
-    virtual std::vector<int> GetBindingMsgs() = 0;
+    virtual void GetBindingMsgs(int* bingdingMsgs, int& count) = 0;
     virtual void OnMessage(int msg, int param1, int param2, int senderID) = 0;
 
     virtual int GetID() = 0;

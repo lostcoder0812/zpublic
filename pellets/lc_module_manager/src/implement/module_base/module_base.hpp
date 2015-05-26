@@ -88,17 +88,25 @@
                                                     return 0;                                                                                          \
                                                 }                                                                                                      \
                                                 public:                                                                                                \
-                                                std::vector<int> GetBindingMsgs()                                                                      \
+                                                void GetBindingMsgs(int* bindingMsgs, int& count)                                                      \
                                                 {                                                                                                      \
-                                                    std::vector<int> Bindingmsgs;                                                                      \
-                                                    msgMappingLock.ReadLock();                                                                         \
-                                                    for each (auto var in msgMapping)                                                                  \
+                                                    if (bindingMsgs == nullptr || count < msgMapping.count() * sizeof(int))                            \
                                                     {                                                                                                  \
-                                                        Bindingmsgs.push_back(var.first);                                                              \
+                                                        count = msgMapping.count();                                                                    \
+                                                        return ;                                                                                       \
                                                     }                                                                                                  \
-                                                    msgMappingLock.ReadUnlock();                                                                       \
-                                                                                                                                                       \
-                                                    return Bindingmsgs;                                                                                \
+                                                    count = msgMapping.count();                                                                        \
+                                                    else                                                                                               \
+                                                    {                                                                                                  \
+                                                        int* ptr = bindingMsgs;                                                                        \
+                                                        msgMappingLock.ReadLock();                                                                     \
+                                                        for each (auto var in msgMapping)                                                              \
+                                                        {                                                                                              \
+                                                            *ptr = var.first;                                                                          \
+                                                            ptr++;                                                                                     \
+                                                        }                                                                                              \
+                                                        msgMappingLock.ReadUnlock();                                                                   \
+                                                    }                                                                                                  \
                                                 }                                                                                                      \
 
 
@@ -135,7 +143,7 @@ public:
         m_ModuleManager->UnRegMonitorMsg(this, msg);
     } 
 
-    virtual std::vector<int> GetBindingMsgs() = 0;
+    virtual void GetBindingMsgs(int* bingdingMsgs, int& count) = 0;
     virtual void OnMessage(int msg, int param1, int param2, int senderID) = 0;
 
     virtual int GetID() = 0;

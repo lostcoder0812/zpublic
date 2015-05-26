@@ -188,10 +188,13 @@ void ModuleManager::LoadMsgObserver(IMessageObserver* const observer)
 {
     if (observer != nullptr)
     {
-        std::vector<int> bindingMsgs = observer->GetBindingMsgs();
-        for each (int msg in bindingMsgs)
+        int bindingMsgs[100] = { 0 };
+        int count = 100;
+
+        observer->GetBindingMsgs(bindingMsgs, count);
+        for(int i = 0; i < count; i++)
         {
-            RegMonitorMsg(observer, msg);
+            RegMonitorMsg(observer, bindingMsgs[i]);
         }
     }
 }
